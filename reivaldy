@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reivaldy Imam Ramadhan — Perkenalan Diri</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,600;1,9..144,400&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #0a0e12;
+    --bg-alt: #0d1218;
+    --panel: #12181f;
+    --panel-2: #161d25;
+    --brass: #c9a876;
+    --brass-soft: rgba(201,168,118,0.35);
+    --cream: #eee8db;
+    --muted: #8b93a0;
+    --line: rgba(238,232,219,0.09);
+    --shadow: rgba(0,0,0,0.55);
+  }
+
+  *{ margin:0; padding:0; box-sizing:border-box; }
+  html{ scroll-behavior:smooth; }
+
+  body{
+    background: var(--bg);
+    color: var(--cream);
+    font-family:'Inter', sans-serif;
+    overflow-x:hidden;
+    position:relative;
+  }
+
+  ::selection{ background: var(--brass); color:#0a0e12; }
+
+  /* scrollbar */
+  ::-webkit-scrollbar{ width:8px; }
+  ::-webkit-scrollbar-track{ background:var(--bg); }
+  ::-webkit-scrollbar-thumb{ background:var(--panel-2); border-radius:4px; }
+
+  #bg-canvas{
+    position:fixed; inset:0; width:100%; height:100%; z-index:0; opacity:0.55;
+  }
+
+  .grain{
+    position:fixed; inset:0; z-index:1; pointer-events:none; opacity:0.035;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  nav{
+    position:fixed; top:0; left:0; right:0; z-index:50;
+    display:flex; justify-content:space-between; align-items:center;
+    padding:26px 6vw; backdrop-filter: blur(10px);
+    background:linear-gradient(to bottom, rgba(10,14,18,0.75), transparent);
+    font-family:'JetBrains Mono', monospace; font-size:12px; letter-spacing:0.12em;
+  }
+  nav .brand{ color:var(--brass); text-transform:uppercase; font-weight:500; }
+  nav ul{ list-style:none; display:flex; gap:36px; }
+  nav a{
+    color:var(--muted); text-decoration:none; text-transform:uppercase;
+    position:relative; padding-bottom:4px; transition:color .3s ease;
+  }
+  nav a::after{
+    content:''; position:absolute; left:0; bottom:0; width:0; height:1px;
+    background:var(--brass); transition:width .35s ease;
+  }
+  nav a:hover{ color:var(--cream); }
+  nav a:hover::after{ width:100%; }
+
+  section{ position:relative; z-index:2; }
+
+  /* ---------- HERO ---------- */
+  .hero{
+    min-height:100vh; display:flex; align-items:center; justify-content:center;
+    padding:120px 6vw 80px; perspective:1400px;
+  }
+  .hero-inner{
+    display:grid; grid-template-columns:1.15fr 0.85fr; gap:60px;
+    align-items:center; max-width:1240px; width:100%;
+  }
+  .eyebrow{
+    font-family:'JetBrains Mono', monospace; font-size:12px; letter-spacing:0.25em;
+    color:var(--brass); text-transform:uppercase; display:flex; align-items:center; gap:12px;
+    opacity:0; animation:fadeUp .9s ease .1s forwards;
+  }
+  .eyebrow::before{ content:''; width:28px; height:1px; background:var(--brass); display:inline-block; }
+
+  h1.name{
+    font-family:'Fraunces', serif; font-weight:500; font-size:clamp(3rem, 6.2vw, 5.6rem);
+    line-height:1.02; margin:18px 0 10px; letter-spacing:-0.01em;
+    opacity:0; animation:fadeUp 1s ease .25s forwards;
+  }
+  h1.name em{ font-style:italic; color:var(--brass); font-weight:400; }
+
+  .role{
+    font-size:1.15rem; color:var(--muted); font-weight:300; max-width:480px;
+    margin-bottom:34px; line-height:1.6;
+    opacity:0; animation:fadeUp 1s ease .4s forwards;
+  }
+  .role b{ color:var(--cream); font-weight:500; }
+
+  .cta-row{ display:flex; gap:16px; opacity:0; animation:fadeUp 1s ease .55s forwards; }
+  .btn{
+    font-family:'JetBrains Mono', monospace; font-size:12.5px; letter-spacing:0.08em;
+    text-transform:uppercase; padding:15px 28px; text-decoration:none;
+    border-radius:2px; transition:all .35s cubic-bezier(.2,.8,.2,1); display:inline-block;
+  }
+  .btn-primary{ background:var(--brass); color:#0a0e12; font-weight:500; }
+  .btn-primary:hover{ transform:translateY(-3px); box-shadow:0 12px 28px -8px var(--brass-soft); }
+  .btn-ghost{ border:1px solid var(--line); color:var(--cream); }
+  .btn-ghost:hover{ border-color:var(--brass); color:var(--brass); transform:translateY(-3px); }
+
+  @keyframes fadeUp{ from{opacity:0; transform:translateY(22px);} to{opacity:1; transform:translateY(0);} }
+
+  /* 3D identity card */
+  .card-wrap{
+    perspective:1200px; opacity:0; animation:fadeUp 1.1s ease .5s forwards;
+  }
+  .id-card{
+    position:relative; width:100%; max-width:340px; margin:0 auto;
+    aspect-ratio:3/4; border-radius:14px; transform-style:preserve-3d;
+    background:linear-gradient(155deg, var(--panel-2), var(--panel) 60%, #0c1116);
+    border:1px solid var(--line);
+    box-shadow:0 30px 60px -20px var(--shadow), inset 0 1px 0 rgba(238,232,219,0.05);
+    transition:transform .15s ease-out;
+    will-change:transform;
+  }
+  .id-card::before{
+    content:''; position:absolute; inset:0; border-radius:14px; padding:1px;
+    background:linear-gradient(140deg, var(--brass-soft), transparent 40%, transparent 60%, var(--brass-soft));
+    -webkit-mask:linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite:xor; mask-composite:exclude; pointer-events:none;
+  }
+  .sheen{
+    position:absolute; inset:0; border-radius:14px; pointer-events:none;
+    background:linear-gradient(115deg, transparent 20%, rgba(238,232,219,0.14) 42%, transparent 60%);
+    background-size:250% 250%; background-position:120% 0%;
+    transition:background-position .6s ease;
+  }
+  .id-card:hover .sheen{ background-position:-20% 100%; }
+
+  .card-face{
+    position:absolute; inset:0; padding:30px; display:flex; flex-direction:column;
+    justify-content:space-between; transform:translateZ(40px);
+  }
+  .avatar-ring{
+    width:104px; height:104px; border-radius:50%; margin:0 auto;
+    background:conic-gradient(from 220deg, var(--brass), transparent 40%, transparent 60%, var(--brass));
+    display:flex; align-items:center; justify-content:center; padding:3px;
+  }
+  .avatar{
+    width:100%; height:100%; border-radius:50%; background:#1a2129;
+    display:flex; align-items:center; justify-content:center; overflow:hidden;
+    font-family:'Fraunces', serif; font-size:2.1rem; color:var(--brass);
+  }
+  .card-mid{ text-align:center; }
+  .card-mid .cname{ font-family:'Fraunces', serif; font-size:1.4rem; margin-bottom:4px; }
+  .card-mid .crole{ font-size:12px; color:var(--muted); letter-spacing:0.06em; text-transform:uppercase; }
+  .card-bottom{
+    display:flex; justify-content:space-between; font-family:'JetBrains Mono', monospace;
+    font-size:10.5px; color:var(--muted); border-top:1px solid var(--line); padding-top:14px;
+  }
+  .card-bottom span b{ color:var(--brass); display:block; font-size:13px; margin-bottom:2px; }
+
+  .scroll-cue{
+    position:absolute; bottom:34px; left:50%; transform:translateX(-50%);
+    display:flex; flex-direction:column; align-items:center; gap:8px;
+    color:var(--muted); font-family:'JetBrains Mono', monospace; font-size:10px;
+    letter-spacing:0.15em; text-transform:uppercase; opacity:0; animation:fadeUp 1s ease 1s forwards;
+  }
+  .scroll-line{ width:1px; height:36px; background:linear-gradient(var(--brass), transparent); animation:scrollMove 2s ease-in-out infinite; }
+  @keyframes scrollMove{ 0%,100%{transform:scaleY(1); transform-origin:top;} 50%{transform:scaleY(0.4); transform-origin:top;} }
+
+  /* ---------- reveal ---------- */
+  .reveal{ opacity:0; transform:translateY(40px); transition:opacity .9s ease, transform .9s ease; }
+  .reveal.in{ opacity:1; transform:translateY(0); }
+
+  .section-head{ max-width:640px; margin:0 auto 64px; text-align:center; }
+  .section-head .eyebrow{ justify-content:center; opacity:1; animation:none; }
+  .section-head h2{
+    font-family:'Fraunces', serif; font-weight:500; font-size:clamp(2rem,4vw,3rem);
+    margin-top:14px; line-height:1.15;
+  }
+  .section-head p{ color:var(--muted); margin-top:16px; font-weight:300; line-height:1.7; }
+
+  .wrap{ max-width:1180px; margin:0 auto; padding:140px 6vw; }
+
+  /* ---------- ABOUT ---------- */
+  .about-grid{ display:grid; grid-template-columns:0.9fr 1.1fr; gap:70px; align-items:start; }
+  .about-text p{ color:var(--muted); font-weight:300; line-height:1.85; margin-bottom:18px; font-size:1.02rem; }
+  .about-text strong{ color:var(--cream); font-weight:500; }
+
+  .stats{ display:grid; grid-template-columns:1fr 1fr; gap:24px; margin-top:10px; }
+  .stat{
+    background:var(--panel); border:1px solid var(--line); border-radius:10px;
+    padding:26px 22px; transition:transform .4s ease, border-color .4s ease;
+  }
+  .stat:hover{ transform:translateY(-6px); border-color:var(--brass-soft); }
+  .stat .num{ font-family:'Fraunces', serif; font-size:2.4rem; color:var(--brass); }
+  .stat .lbl{ font-size:12px; color:var(--muted); text-transform:uppercase; letter-spacing:0.08em; margin-top:6px; }
+
+  /* ---------- SKILLS (3D flip) ---------- */
+  .skills-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:22px; }
+  .flip{ perspective:1000px; height:190px; }
+  .flip-inner{
+    position:relative; width:100%; height:100%; transform-style:preserve-3d;
+    transition:transform .7s cubic-bezier(.2,.8,.2,1);
+  }
+  .flip:hover .flip-inner{ transform:rotateY(180deg); }
+  .flip-face{
+    position:absolute; inset:0; backface-visibility:hidden; border-radius:12px;
+    border:1px solid var(--line); display:flex; flex-direction:column;
+    align-items:center; justify-content:center; text-align:center; padding:18px;
+    background:var(--panel);
+  }
+  .flip-front .glyph{ font-family:'Fraunces', serif; font-size:2.2rem; color:var(--brass); margin-bottom:10px; font-style:italic; }
+  .flip-front .lbl{ font-size:13px; letter-spacing:0.04em; }
+  .flip-back{
+    transform:rotateY(180deg); background:linear-gradient(160deg, var(--panel-2), #0c1116);
+  }
+  .flip-back .pct{ font-family:'Fraunces', serif; font-size:2rem; color:var(--brass); }
+  .flip-back .desc{ font-size:11.5px; color:var(--muted); margin-top:8px; line-height:1.6; }
+
+  /* ---------- TIMELINE ---------- */
+  .timeline{ position:relative; padding-left:36px; }
+  .timeline::before{ content:''; position:absolute; left:0; top:6px; bottom:6px; width:1px; background:var(--line); }
+  .t-item{ position:relative; padding-bottom:52px; }
+  .t-item:last-child{ padding-bottom:0; }
+  .t-item::before{
+    content:''; position:absolute; left:-40px; top:4px; width:9px; height:9px; border-radius:50%;
+    background:var(--brass); box-shadow:0 0 0 4px rgba(201,168,118,0.15);
+  }
+  .t-year{ font-family:'JetBrains Mono', monospace; color:var(--brass); font-size:12px; letter-spacing:0.08em; }
+  .t-title{ font-family:'Fraunces', serif; font-size:1.35rem; margin:8px 0 6px; }
+  .t-desc{ color:var(--muted); font-weight:300; line-height:1.7; max-width:600px; }
+
+  /* ---------- CONTACT ---------- */
+  .contact-panel{
+    background:linear-gradient(155deg, var(--panel-2), var(--panel));
+    border:1px solid var(--line); border-radius:18px; padding:70px 6vw;
+    text-align:center; position:relative; overflow:hidden;
+  }
+  .contact-panel::before{
+    content:''; position:absolute; width:500px; height:500px; border-radius:50%;
+    background:radial-gradient(circle, var(--brass-soft), transparent 70%);
+    top:-250px; right:-150px; opacity:0.5; pointer-events:none;
+  }
+  .contact-panel h2{ font-family:'Fraunces', serif; font-size:clamp(2rem,4.5vw,3.3rem); margin-bottom:18px; position:relative; }
+  .contact-panel p{ color:var(--muted); max-width:480px; margin:0 auto 34px; font-weight:300; position:relative; }
+  .contact-links{ display:flex; gap:18px; justify-content:center; flex-wrap:wrap; position:relative; }
+
+  footer{
+    text-align:center; padding:34px 6vw; color:var(--muted);
+    font-family:'JetBrains Mono', monospace; font-size:11px; letter-spacing:0.08em;
+    border-top:1px solid var(--line);
+  }
+
+  @media (max-width: 860px){
+    .hero-inner{ grid-template-columns:1fr; text-align:center; }
+    .eyebrow{ justify-content:center; }
+    .role{ margin-left:auto; margin-right:auto; }
+    .cta-row{ justify-content:center; }
+    .about-grid{ grid-template-columns:1fr; }
+    .skills-grid{ grid-template-columns:repeat(2,1fr); }
+    nav ul{ display:none; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ animation-duration:0.01ms !important; animation-iteration-count:1 !important; transition-duration:0.01ms !important; }
+  }
+</style>
+</head>
+<body>
+
+<canvas id="bg-canvas"></canvas>
+<div class="grain"></div>
+
+<nav>
+  <div class="brand">Reivaldy Imam Ramadhan</div>
+  <ul>
+    <li><a href="#about">Tentang</a></li>
+    <li><a href="#skills">Keahlian</a></li>
+    <li><a href="#journey">Perjalanan</a></li>
+    <li><a href="#contact">Kontak</a></li>
+  </ul>
+</nav>
+
+<section class="hero">
+  <div class="hero-inner">
+    <div>
+      <div class="eyebrow">Perkenalan Diri</div>
+      <h1 class="name">Halo, saya<br><em>Reivaldy Imam Ramadhan</em></h1>
+      <p class="role">Siswa <b>SMK Negeri 5 Bandung</b> jurusan Teknik Komputer dan Jaringan (TKJ), kelas 13. Saat ini menjalani PKL di <b>PT Elda Sarana Informatika</b> sebagai teknisi elektro.</p>
+      <div class="cta-row">
+        <a href="#contact" class="btn btn-primary">Hubungi Saya</a>
+        <a href="#about" class="btn btn-ghost">Kenali Lebih Jauh</a>
+      </div>
+    </div>
+
+    <div class="card-wrap">
+      <div class="id-card" id="idCard">
+        <div class="sheen"></div>
+        <div class="card-face">
+          <div class="avatar-ring"><div class="avatar"><img src="foto.jpg" alt="Foto Reivaldy Imam Ramadhan" style="width:100%;height:100%;object-fit:cover;border-radius:50%;"></div></div>
+          <div class="card-mid">
+            <div class="cname">Reivaldy Imam Ramadhan</div>
+            <div class="crole">Siswa TKJ &middot; Intern Teknisi Elektro</div>
+          </div>
+          <div class="card-bottom">
+            <span><b>17</b>Tahun</span>
+            <span><b>XIII</b>TKJ</span>
+            <span><b>ID</b>Bandung</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="scroll-cue"><span>Gulir</span><div class="scroll-line"></div></div>
+</section>
+
+<section id="about">
+  <div class="wrap">
+    <div class="about-grid">
+      <div class="reveal">
+        <div class="eyebrow" style="opacity:1;animation:none;">Tentang Saya</div>
+        <h2 style="font-family:'Fraunces',serif; font-size:clamp(1.8rem,3.2vw,2.6rem); margin-top:14px; line-height:1.2;">Belajar dari sistem,<br>tumbuh lewat praktik.</h2>
+      </div>
+      <div class="about-text reveal">
+        <p>Saya <strong>Reivaldy Imam Ramadhan</strong>, lahir di Bandung, 24 September 2008. Saat ini berusia 17 tahun dan sedang menempuh pendidikan di <strong>SMK Negeri 5 Bandung</strong>, jurusan Teknik Komputer dan Jaringan (TKJ), kelas 13.</p>
+        <p>Saya sedang menjalani Praktik Kerja Lapangan (PKL) di <strong>PT Elda Sarana Informatika</strong>, tempat saya bekerja sebagai teknisi elektro — menangani instalasi, perawatan, dan troubleshooting kelistrikan serta perangkat pendukungnya.</p>
+        <div class="stats">
+          <div class="stat"><div class="num">17</div><div class="lbl">Tahun</div></div>
+          <div class="stat"><div class="num">XIII</div><div class="lbl">Kelas TKJ</div></div>
+          <div class="stat"><div class="num">PKL</div><div class="lbl">Elda Sarana Informatika</div></div>
+          <div class="stat"><div class="num">BDG</div><div class="lbl">Bandung, Indonesia</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="skills">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="eyebrow">Keahlian</div>
+      <h2>Alat &amp; kemampuan yang saya kuasai</h2>
+      <p>Arahkan kursor ke setiap kartu untuk melihat tingkat penguasaan.</p>
+    </div>
+    <div class="skills-grid">
+      <div class="flip reveal">
+        <div class="flip-inner">
+          <div class="flip-face flip-front"><div class="glyph">⚡</div><div class="lbl">Instalasi Elektro</div></div>
+          <div class="flip-face flip-back"><div class="pct">85%</div><div class="desc">Instalasi &amp; perawatan sistem kelistrikan dasar</div></div>
+        </div>
+      </div>
+      <div class="flip reveal">
+        <div class="flip-inner">
+          <div class="flip-face flip-front"><div class="glyph">Net</div><div class="lbl">Jaringan Komputer</div></div>
+          <div class="flip-face flip-back"><div class="pct">80%</div><div class="desc">Konfigurasi LAN, troubleshooting jaringan</div></div>
+        </div>
+      </div>
+      <div class="flip reveal">
+        <div class="flip-inner">
+          <div class="flip-face flip-front"><div class="glyph">Fix</div><div class="lbl">Troubleshooting</div></div>
+          <div class="flip-face flip-back"><div class="pct">88%</div><div class="desc">Diagnosa &amp; perbaikan perangkat keras/elektro</div></div>
+        </div>
+      </div>
+      <div class="flip reveal">
+        <div class="flip-inner">
+          <div class="flip-face flip-front"><div class="glyph">Tim</div><div class="lbl">Kerja Tim</div></div>
+          <div class="flip-face flip-back"><div class="pct">90%</div><div class="desc">Kolaborasi lapangan bersama tim teknisi</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="journey">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="eyebrow">Perjalanan</div>
+      <h2>Langkah demi langkah</h2>
+    </div>
+    <div class="timeline">
+      <div class="t-item reveal">
+        <div class="t-year">Sekarang</div>
+        <div class="t-title">PKL — Teknisi Elektro di PT Elda Sarana Informatika</div>
+        <div class="t-desc">Menjalani Praktik Kerja, terlibat langsung dalam pekerjaan kelistrikan dan perangkat pendukungnya di lingkungan kerja nyata.</div>
+      </div>
+      <div class="t-item reveal">
+        <div class="t-year">Kelas 13</div>
+        <div class="t-title">SMK Negeri 5 Bandung — Jurusan TKJ</div>
+        <div class="t-desc">Menempuh pendidikan Teknik Komputer dan Jaringan, mempelajari jaringan komputer, perakitan, dan dasar kelistrikan.</div>
+      </div>
+      <div class="t-item reveal">
+        <div class="t-year">24 September 2008</div>
+        <div class="t-title">Lahir di Bandung</div>
+        <div class="t-desc">Awal dari perjalanan panjang menuju hari ini.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="contact">
+  <div class="wrap" style="padding-top:0;">
+    <div class="contact-panel reveal">
+      <h2>Mari berkolaborasi</h2>
+      <p>Punya proyek menarik atau sekadar ingin menyapa? Kotak masuk saya selalu terbuka.</p>
+      <div class="contact-links">
+        <a href="mailto:reivaldy129@gmail.com" class="btn btn-primary">reivaldy129@gmail.com</a>
+        <a href="https://www.instagram.com/reii_ree?igsh=bndjZTNrN2JsNjdx" target="_blank" rel="noopener noreferrer" class="btn btn-ghost">Instagram</a>
+        <a href="https://www.tiktok.com/@reiii_.r?_r=1&_t=ZS-97wEXKEE7uv" target="_blank" rel="noopener noreferrer" class="btn btn-ghost">TikTok</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>© 2026 Reivaldy Imam Ramadhan — Siswa TKJ SMKN 5 Bandung.</footer>
+
+<script>
+  // ambient particle background
+  const canvas = document.getElementById('bg-canvas');
+  const ctx = canvas.getContext('2d');
+  let w, h, particles;
+
+  function resize(){
+    w = canvas.width = window.innerWidth;
+    h = canvas.height = window.innerHeight;
+  }
+  function initParticles(){
+    const count = Math.min(70, Math.floor((w*h)/22000));
+    particles = Array.from({length: count}, () => ({
+      x: Math.random()*w, y: Math.random()*h,
+      r: Math.random()*1.6 + 0.4,
+      vx: (Math.random()-0.5)*0.15,
+      vy: (Math.random()-0.5)*0.15,
+      a: Math.random()*0.5 + 0.15
+    }));
+  }
+  function drawParticles(){
+    ctx.clearRect(0,0,w,h);
+    particles.forEach(p=>{
+      p.x += p.vx; p.y += p.vy;
+      if(p.x<0) p.x=w; if(p.x>w) p.x=0;
+      if(p.y<0) p.y=h; if(p.y>h) p.y=0;
+      ctx.beginPath();
+      ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+      ctx.fillStyle = `rgba(201,168,118,${p.a})`;
+      ctx.fill();
+    });
+    requestAnimationFrame(drawParticles);
+  }
+  window.addEventListener('resize', ()=>{ resize(); initParticles(); });
+  resize(); initParticles(); drawParticles();
+
+  // 3D tilt for identity card
+  const card = document.getElementById('idCard');
+  const cardWrap = card.parentElement;
+  cardWrap.addEventListener('mousemove', (e)=>{
+    const rect = card.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / rect.width - 0.5;
+    const y = (e.clientY - rect.top) / rect.height - 0.5;
+    card.style.transform = `rotateY(${x*22}deg) rotateX(${-y*22}deg) scale(1.02)`;
+  });
+  cardWrap.addEventListener('mouseleave', ()=>{
+    card.style.transform = 'rotateY(0deg) rotateX(0deg) scale(1)';
+  });
+
+  // scroll reveal
+  const revealEls = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(entry=>{
+      if(entry.isIntersecting){
+        entry.target.classList.add('in');
+        io.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15 });
+  revealEls.forEach(el=> io.observe(el));
+</script>
+
+</body>
+</html>
