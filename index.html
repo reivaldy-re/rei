@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Perkenalan Diri</title>
+<style>
+  :root{
+    --bg-deep: #0b0a12;
+    --bg-mid: #14101f;
+    --accent: #b98cff;
+    --accent-2: #5ee7ff;
+    --accent-3: #ff6ec7;
+    --text-soft: #d9d4e8;
+    --card-glass: rgba(255,255,255,0.06);
+  }
+
+  *{ margin:0; padding:0; box-sizing:border-box; }
+
+  html{ scroll-behavior:smooth; }
+
+  body{
+    min-height:100vh;
+    background:
+      radial-gradient(circle at 20% 20%, rgba(185,140,255,0.15), transparent 40%),
+      radial-gradient(circle at 80% 70%, rgba(94,231,255,0.12), transparent 40%),
+      linear-gradient(160deg, var(--bg-deep), var(--bg-mid));
+    color:var(--text-soft);
+    font-family: 'Segoe UI', 'Poppins', sans-serif;
+    overflow-x:hidden;
+    perspective: 1200px;
+  }
+
+  /* ---------- Partikel ambient ---------- */
+  #particles{
+    position:fixed;
+    inset:0;
+    z-index:0;
+    pointer-events:none;
+  }
+  .particle{
+    position:absolute;
+    border-radius:50%;
+    background: radial-gradient(circle, rgba(255,255,255,0.8), transparent 70%);
+    opacity:0.5;
+    animation: float 12s ease-in-out infinite;
+  }
+  @keyframes float{
+    0%,100%{ transform: translateY(0) translateX(0); }
+    50%{ transform: translateY(-40px) translateX(20px); }
+  }
+
+  /* ---------- HERO ---------- */
+  .hero{
+    position:relative;
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    padding:40px 20px;
+    z-index:1;
+  }
+
+  .card-3d{
+    width:min(380px, 90vw);
+    padding:50px 30px;
+    border-radius:24px;
+    background:var(--card-glass);
+    backdrop-filter: blur(18px);
+    border:1px solid rgba(255,255,255,0.12);
+    box-shadow: 0 25px 60px rgba(0,0,0,0.5);
+    transform-style:preserve-3d;
+    transition: transform 0.15s ease-out;
+    position:relative;
+    opacity:0;
+    animation: cardIn 1s ease forwards 0.3s;
+  }
+
+  @keyframes cardIn{
+    from{ opacity:0; transform: translateY(40px) rotateX(10deg); }
+    to{ opacity:1; transform: translateY(0) rotateX(0); }
+  }
+
+  .avatar{
+    width:120px;
+    height:120px;
+    border-radius:50%;
+    margin:0 auto 20px;
+    background: conic-gradient(from 180deg, var(--accent), var(--accent-2), var(--accent-3), var(--accent));
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:42px;
+    font-weight:700;
+    color:#0b0a12;
+    box-shadow: 0 0 40px rgba(185,140,255,0.5);
+    transform: translateZ(60px);
+    animation: pulseGlow 3s ease-in-out infinite;
+  }
+
+  /* Dipakai jika avatar berupa foto asli, bukan inisial teks */
+  .avatar-photo{
+    width:120px;
+    height:120px;
+    border-radius:50%;
+    margin:0 auto 20px;
+    padding:4px; /* jadi border cincin gradient */
+    background: conic-gradient(from 180deg, var(--accent), var(--accent-2), var(--accent-3), var(--accent));
+    box-shadow: 0 0 40px rgba(185,140,255,0.5);
+    transform: translateZ(60px);
+    animation: pulseGlow 3s ease-in-out infinite;
+  }
+  .avatar-photo img{
+    width:100%;
+    height:100%;
+    border-radius:50%;
+    object-fit:cover;       /* foto ukuran apapun tetap pas & tidak gepeng */
+    object-position:center; /* fokus ke tengah wajah */
+    display:block;
+    border:3px solid var(--bg-mid);
+  }
+
+  @keyframes pulseGlow{
+    0%,100%{ box-shadow: 0 0 40px rgba(185,140,255,0.5); }
+    50%{ box-shadow: 0 0 65px rgba(94,231,255,0.6); }
+  }
+
+  .name{
+    font-size:2rem;
+    font-weight:800;
+    letter-spacing:1px;
+    background: linear-gradient(90deg, var(--accent), var(--accent-2), var(--accent-3));
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+    transform: translateZ(40px);
+  }
+
+  .role{
+    margin-top:8px;
+    font-size:1rem;
+    opacity:0.8;
+    transform: translateZ(30px);
+  }
+
+  .tagline{
+    margin-top:18px;
+    font-size:0.95rem;
+    line-height:1.6;
+    opacity:0.75;
+    transform: translateZ(20px);
+  }
+
+  .scroll-hint{
+    margin-top:40px;
+    font-size:0.8rem;
+    opacity:0.5;
+    animation: bounce 2s infinite;
+  }
+  @keyframes bounce{
+    0%,100%{ transform: translateY(0); }
+    50%{ transform: translateY(8px); }
+  }
+
+  /* ---------- SECTION UMUM ---------- */
+  section{
+    position:relative;
+    z-index:1;
+    max-width:800px;
+    margin:0 auto;
+    padding:80px 24px;
+  }
+
+  .section-title{
+    font-size:1.6rem;
+    font-weight:700;
+    margin-bottom:30px;
+    text-align:center;
+    color:#fff;
+    opacity:0;
+    transform: translateY(30px);
+    transition: all 0.8s ease;
+  }
+  .section-title.show{ opacity:1; transform:translateY(0); }
+
+  /* ---------- GRID TENTANG ---------- */
+  .about-grid{
+    display:grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px,1fr));
+    gap:18px;
+  }
+  .about-item{
+    background:var(--card-glass);
+    border:1px solid rgba(255,255,255,0.1);
+    border-radius:16px;
+    padding:24px 18px;
+    text-align:center;
+    opacity:0;
+    transform: translateY(30px) rotateX(-10deg);
+    transition: all 0.7s ease;
+  }
+  .about-item.show{ opacity:1; transform: translateY(0) rotateX(0); }
+  .about-item .icon{ font-size:28px; margin-bottom:10px; }
+  .about-item .label{ font-size:0.8rem; opacity:0.6; margin-bottom:4px; }
+  .about-item .value{ font-weight:700; color:#fff; }
+
+  /* ---------- SKILL BARS ---------- */
+  .skill{
+    margin-bottom:18px;
+    opacity:0;
+    transform: translateX(-30px);
+    transition: all 0.7s ease;
+  }
+  .skill.show{ opacity:1; transform:translateX(0); }
+  .skill-top{ display:flex; justify-content:space-between; font-size:0.9rem; margin-bottom:6px; }
+  .skill-bar{ height:8px; border-radius:6px; background:rgba(255,255,255,0.08); overflow:hidden; }
+  .skill-fill{
+    height:100%;
+    border-radius:6px;
+    background: linear-gradient(90deg, var(--accent), var(--accent-2));
+    width:0%;
+    transition: width 1.4s cubic-bezier(.2,.8,.2,1);
+  }
+
+  /* ---------- SOSMED ---------- */
+  .social-grid{
+    display:flex;
+    justify-content:center;
+    gap:22px;
+    flex-wrap:wrap;
+  }
+  .social-card{
+    width:150px;
+    padding:26px 16px;
+    border-radius:18px;
+    background:var(--card-glass);
+    border:1px solid rgba(255,255,255,0.12);
+    text-align:center;
+    text-decoration:none;
+    color:var(--text-soft);
+    transform-style:preserve-3d;
+    transition: transform 0.35s ease, box-shadow 0.35s ease;
+    opacity:0;
+    translate: 0 30px;
+    animation: none;
+  }
+  .social-card.show{
+    animation: cardIn 0.8s ease forwards;
+  }
+  .social-card:hover{
+    transform: translateY(-10px) rotateX(8deg) rotateY(-8deg) scale(1.05);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+  }
+  .social-card .s-icon{
+    font-size:34px;
+    margin-bottom:10px;
+    display:block;
+  }
+  .social-card.tiktok .s-icon{ color:#69f0d1; }
+  .social-card.instagram .s-icon{ color:#ff6ec7; }
+  .social-card .s-name{ font-weight:700; color:#fff; font-size:0.95rem; }
+  .social-card .s-handle{ font-size:0.78rem; opacity:0.6; margin-top:4px; }
+
+  footer{
+    text-align:center;
+    padding:40px 20px 60px;
+    font-size:0.8rem;
+    opacity:0.4;
+    position:relative;
+    z-index:1;
+  }
+
+  @media (max-width:480px){
+    .name{ font-size:1.6rem; }
+  }
+</style>
+</head>
+<body>
+
+<div id="particles"></div>
+
+<!-- ============ HERO ============ -->
+<section class="hero">
+  <div class="card-3d" id="tiltCard">
+    <!-- Kalau pakai inisial teks, tetap pakai baris di bawah ini:
+    <div class="avatar">NA</div>
+    -->
+    <!-- Kalau pakai foto asli, ganti "foto-kamu.jpg" dengan nama file fotomu -->
+    <div class="avatar-photo">
+      <img src="c:\Users\reii\Downloads\WhatsApp Image 2026-07-11 at 01.45.08.jpeg" alt="Foto Profil">
+    </div>
+    <div class="name">Reivaldy Imam Ramadhan</div>
+    <div class="role">Pelajar</div>
+    <p class="tagline">
+      Halo! Saya reivaldy imam ramadhan,  saya tinggal di bandung 24 september 2008. saya mempunyai mimpi untuk menjadi tukang ijut. ✨
+    </p>
+  </div>
+  <div class="scroll-hint">↓ scroll untuk lihat lebih banyak</div>
+</div>
+</section>
+
+<!-- ============ TENTANG ============ -->
+<section>
+  <h2 class="section-title reveal">Tentang Saya</h2>
+  <div class="about-grid">
+    <div class="about-item reveal">
+      <div class="icon">🎂</div>
+      <div class="label">Umur</div>
+      <div class="value">17 tahun</div>
+    </div>
+    <div class="about-item reveal">
+      <div class="icon">📍</div>
+      <div class="label">Domisili</div>
+      <div class="value">Bandung</div>
+    </div>
+    <div class="about-item reveal">
+      <div class="icon">🎓</div>
+      <div class="label">Sekolah</div>
+      <div class="value">SMKN 5 BANDUNG</div>
+    </div>
+    <div class="about-item reveal">
+      <div class="icon">💡</div>
+      <div class="label">Hobi</div>
+      <div class="value">• Musik • Gaming</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SKILL ============ -->
+<section>
+  <h2 class="section-title reveal">Yang Aku Kuasai</h2>
+  <div class="skill reveal" data-level="85">
+    <div class="skill-top"><span>Ngoprek alat elektronik</span><span>85%</span></div>
+    <div class="skill-bar"><div class="skill-fill"></div></div>
+  </div>
+  <div class="skill reveal" data-level="70">
+    <div class="skill-top"><span>Editing Video</span><span>70%</span></div>
+    <div class="skill-bar"><div class="skill-fill"></div></div>
+  </div>
+  <div class="skill reveal" data-level="60">
+    <div class="skill-top"><span>ijut</span><span>60%</span></div>
+    <div class="skill-bar"><div class="skill-fill"></div></div>
+  </div>
+</section>
+
+<!-- ============ SOSMED ============ -->
+<section>
+  <h2 class="section-title reveal">Yuk Terhubung</h2>
+  <div class="social-grid">
+    <a href="https://www.tiktok.com/@reiii_.r?_r=1&_t=ZS-97wEXKEE7uv" target="_blank" class="social-card tiktok reveal">
+      <span class="s-icon">🎵</span>
+      <div class="s-name">TikTok</div>
+      <div class="s-handle">@reiii_.r</div>
+    </a>
+    <a href="https://www.instagram.com/reii_ree?igsh=bndjZTNrN2JsNjdx" target="_blank" class="social-card instagram reveal">
+      <span class="s-icon">📸</span>
+      <div class="s-name">Instagram</div>
+      <div class="s-handle">@reii_ree</div>
+    </a>
+  </div>
+</section>
+
+<footer>Dibuat dengan ✦ HTML, CSS & sedikit JavaScript</footer>
+
+<script>
+  // ---------- Partikel ambient ----------
+  const particleContainer = document.getElementById('particles');
+  const colors = ['#b98cff', '#5ee7ff', '#ff6ec7'];
+  for(let i=0;i<35;i++){
+    const p = document.createElement('div');
+    p.className = 'particle';
+    const size = Math.random()*4 + 2;
+    p.style.width = size+'px';
+    p.style.height = size+'px';
+    p.style.left = Math.random()*100+'%';
+    p.style.top = Math.random()*100+'%';
+    p.style.background = `radial-gradient(circle, ${colors[i % colors.length]}, transparent 70%)`;
+    p.style.animationDuration = (8 + Math.random()*10)+'s';
+    p.style.animationDelay = (Math.random()*5)+'s';
+    particleContainer.appendChild(p);
+  }
+
+  // ---------- Tilt 3D pada kartu hero ----------
+  const tiltCard = document.getElementById('tiltCard');
+  const heroSection = document.querySelector('.hero');
+
+  heroSection.addEventListener('mousemove', (e) => {
+    const rect = tiltCard.getBoundingClientRect();
+    const x = e.clientX - rect.left - rect.width/2;
+    const y = e.clientY - rect.top - rect.height/2;
+    const rotateX = (y / rect.height) * -18;
+    const rotateY = (x / rect.width) * 18;
+    tiltCard.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+  });
+
+  heroSection.addEventListener('mouseleave', () => {
+    tiltCard.style.transform = 'rotateX(0) rotateY(0)';
+  });
+
+  // Dukungan touch sederhana (device mobile)
+  heroSection.addEventListener('touchmove', (e) => {
+    const touch = e.touches[0];
+    const rect = tiltCard.getBoundingClientRect();
+    const x = touch.clientX - rect.left - rect.width/2;
+    const y = touch.clientY - rect.top - rect.height/2;
+    const rotateX = (y / rect.height) * -12;
+    const rotateY = (x / rect.width) * 12;
+    tiltCard.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+  }, {passive:true});
+
+  // ---------- Reveal saat scroll ----------
+  const revealEls = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if(entry.isIntersecting){
+        entry.target.classList.add('show');
+        // isi skill bar saat terlihat
+        if(entry.target.classList.contains('skill')){
+          const fill = entry.target.querySelector('.skill-fill');
+          const level = entry.target.getAttribute('data-level');
+          requestAnimationFrame(() => { fill.style.width = level + '%'; });
+        }
+      }
+    });
+  }, { threshold: 0.2 });
+
+  revealEls.forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>
